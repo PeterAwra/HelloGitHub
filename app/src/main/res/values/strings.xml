@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">HelloGitHub</string>
+    <string name="count_rotation">Количество оборотов экрана</string>
 </resources>
