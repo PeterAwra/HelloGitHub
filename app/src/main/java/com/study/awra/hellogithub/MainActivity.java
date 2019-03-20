@@ -6,25 +6,32 @@ import android.util.Log;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
-    private int mCountRotation=0;
-    private String mText;
+    public static final String KEY_ORIENTATION = "orientation";
     private static final String KEY_COUNT_ROTATION = "COUNT_ROTATION";
-    private static final String KEY_TETX = "TETX";
+    private static final String KEY_TEXT = "TEXT";
     private static final String TAG="MainActivity.Log";
+    private String mText;
+    private int mCountRotation=0;
+    private int orientation;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mText=getResources().getString(R.string.count_rotation);
-        TextView view=findViewById(R.id.tv);
+        TextView textView = findViewById(R.id.tv);
+        orientation=getWindowManager().getDefaultDisplay().getRotation();
         if(savedInstanceState!=null){
-            mText=savedInstanceState.getString(KEY_TETX,mText);
+            mText=savedInstanceState.getString(KEY_TEXT,mText);
             mCountRotation=savedInstanceState.getInt(KEY_COUNT_ROTATION,0);
-            if(mCountRotation!=0)
-                mText+=", ";
+            if(savedInstanceState.getInt(KEY_ORIENTATION,0)!=orientation) {
+                mCountRotation++;
+            }
         }
-        mText+=" "+mCountRotation++;
-        view.setText(mText);
+        if(mCountRotation!=0) mText+=",";
+        mText+=" "+String.valueOf(mCountRotation);
+        textView.setText(mText);
+
         logger("onCreate()");
     }
 
@@ -32,7 +39,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_COUNT_ROTATION,mCountRotation);
-        outState.putString(KEY_TETX,mText);
+        outState.putInt(KEY_ORIENTATION,orientation);
+        outState.putString(KEY_TEXT,mText);logger("onSaveInstanceState()");
     }
 
     @Override
